@@ -1,0 +1,512 @@
+Joshua Irvin
+
+
+
+SQL queries to create and populate
+------------------------------------
+
+create table Animal(
+    animal_id     varchar(7) not null,
+    animal_name              varchar(20) not null,
+    gender              varchar(6) not null,
+    breed        varchar(20),
+    intake_date   date,
+    age        int not null,
+    animal_type        varchar(3) not null,
+    check(animal_type in (‘cat’, ‘dog’)),
+    primary key (animal_id));
+create table Adopter(
+    adopter_id    varchar(7) not null,
+    first_name    varchar(20) not null,
+    last_name    varchar(20) not null,
+    email        varchar(30),
+    address    varchar(30) not null,
+    zipcode    varchar(12) not null,
+    city        varchar(20) not null,
+    state        varchar(20) not null,
+    phone        varchar(10) not null,
+    primary key (adopter_id));
+create table Donator(
+    donor_id    varchar(7) not null,
+    first_name    varchar(20) not null,
+    last_name    varchar(20) not null,
+    email        varchar(30),
+    phone        varchar(10) not null,
+    primary key (donor_id));
+create table Employee(
+    emp_id    varchar(7) not null,
+    first_name    varchar(20) not null,
+    last_name    varchar(20) not null,
+    email        varchar(30),
+    address    varchar(30) not null,
+    zipcode    varchar(12) not null,
+    city        varchar(20) not null,
+    state        varchar(20) not null,
+    phone        varchar(10) not null,
+    salary        numeric(8,2),
+    check(salary > 0),
+    primary key (emp_id));
+create table Prospective_adopter(
+    p_adopter_id    varchar(7) not null,
+    first_name    varchar(20) not null,
+    last_name    varchar(20) not null,
+    email        varchar(30),
+    pref_gender   varchar(6) not null,
+    pref_breed    varchar(20),
+    pref_type    varchar(3) not null,
+    check(pref_type in (‘cat’, ‘dog’)),
+    phone        varchar(10) not null,
+    primary key (p_adopter_id, pref_gender, pref_breed, pref_type));
+create table Cat(
+    animal_id    varchar(7) not null,
+    hair_length    varchar(10) not null,
+    check(hair_length in (‘none’, ‘short’, ‘long’)),
+    primary key (animal_id),
+    foreign key (animal_id) references Animal);
+create table Dog(
+    animal_id    varchar(7) not null,
+    size        varchar(10) not null,
+    check(size in (‘small’, ‘medium’, ‘large’)),
+    primary key (animal_id),
+    foreign key (animal_id) references Animal);
+create table Adoption(
+    adopter_id    varchar(7) not null,
+    animal_id    varchar(7) not null,
+    adoption_date        date,
+    primary key (animal_id, adopter_id),
+    foreign key (animal_id) references Animal,
+    foreign key (adopter_id) references Adopter);
+create table Donation(
+    donor_id    varchar(7) not null,
+    animal_id    varchar(7) not null,
+    primary key (animal_id, donor_id),
+    foreign key (animal_id) references Animal,
+    foreign key (donor_id) references Donator);
+create table Desires(
+    p_adopter_id    varchar(7) not null,
+    pref_gender   varchar(6) not null,
+    pref_breed    varchar(20),
+    pref_type    varchar(3) not null,
+    animal_id    varchar(7) not null,
+    primary key (p_adopter_id, pref_gender, pref_breed, pref_type,animal_id),
+    foreign key (p_adopter_id, pref_gender, pref_breed, pref_type) references Prospective_adopter,
+    foreign key (animal_id) references Animal);
+create table Cares(
+    animal_id    varchar(7) not null,
+    emp_id    varchar(7) not null,
+    primary key (animal_id, emp_id) ,
+    foreign key (animal_id) references Animal,
+    foreign key (emp_id) references Employee);
+create table Related(
+    animal_id     varchar(7) not null,
+    sibling_id    varchar(7) not null,
+    primary key (animal_id, sibling_id),
+    foreign key (animal_id) references Cat,
+    foreign key (sibling_id) references Cat(animal_id));
+create table Medical_history(
+    animal_id    varchar(7) not null,
+    spay_neuter    varchar(5) not null,
+    vaccination    varchar(3) not null,
+    fleas        varchar(3) not null,
+    heartworms    varchar(3) not null,
+    primary key(animal_id),
+    foreign key(animal_id) references animal);
+
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (1, 'Orwell', 'male', 'tabby', '2017/03/01', 3, 'cat');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (2, 'Dompido', 'male', 'russian blue', '2015/03/01', 3, 'cat');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (3, 'Girly', 'female', 'russian blue', '2017/04/01', 1, 'cat');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (4, 'Sophia', 'female', 'tabby', '2016/03/25', 2, 'cat');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (5, 'Robert', 'male', 'bengel', '2015/07/08', 3, 'cat');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (6, 'Eloise', 'female', 'maine coon', '2017/04/01', 1, 'cat');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (7, 'Cuddles', 'male', 'tabby', '2016/03/01', 2, 'cat');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (8, 'Sam', 'male', 'tabby', '2016/03/06', 2, 'cat');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (9, 'Poodles', 'male', 'poodle', '2011/05/07', 8, 'dog');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (10, 'Ron', 'male', 'bulldog', '2017/03/01', 0, 'dog');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (11, 'Rowdy', 'male', 'beagle', '2017/03/04', 1, 'dog');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (12, 'Susan', 'female', 'beagle', '2016/12/11', 2, 'dog');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (13, 'Buttercup', 'female', 'husky', '2012/12/11', 6, 'dog');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (14, 'Oliver', 'male', 'pug', '2016/07/01', 4, 'dog');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (15, 'Man', 'male', 'pug', '2016/07/01', 4, 'dog');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (16, 'Shimmer', 'male', 'pug', '2016/08/01', 1, 'dog');
+insert into Animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (17, 'Sleek', 'male', 'golden', '2016/09/01', 2, 'dog');
+insert into Cat(animal_id, hair_length) values (1, 'short');
+insert into Cat(animal_id, hair_length) values (2, 'short');
+insert into Cat(animal_id, hair_length) values (3, 'short');
+insert into Cat(animal_id, hair_length) values (4, 'long');
+insert into Cat(animal_id, hair_length) values (5, 'short');
+insert into Cat(animal_id, hair_length) values (6, 'short');
+insert into Cat(animal_id, hair_length) values (7, 'long');
+insert into Cat(animal_id, hair_length) values (8, 'short');
+insert into Dog(animal_id, size) values (9, 'small');
+insert into Dog(animal_id, size) values (10, 'medium');
+insert into Dog(animal_id, size) values (11, 'medium');
+insert into Dog(animal_id, size) values (12, 'medium');
+insert into Dog(animal_id, size) values (13, 'large');
+insert into Dog(animal_id, size) values (14, 'small');
+insert into Dog(animal_id, size) values (15, 'small');
+insert into Dog(animal_id, size) values (16, 'small');
+insert into Dog(animal_id, size) values (17, 'large');
+insert into Adopter(adopter_id, first_name, last_name, email, address, zipcode, city, state, phone) values (1, 'John', 'McMan', 'johnmcman@hotmail.com', '1234 imaginary street', '68123', 'Omaha', 'NE', '4022924332');
+insert into Adopter(adopter_id, first_name, last_name, email, address, zipcode, city, state, phone) values (2, 'Bob', 'Sutter', 'bs@hotmail.com', '1235 imaginary street', '68123', 'Omaha', 'NE', '4023220322');
+insert into Adopter(adopter_id, first_name, last_name, email, address, zipcode, city, state, phone) values (3, 'Julia', 'Roberts', 'jr@hotmail.com', '1236 imaginary street', '68123', 'Omaha', 'NE', '4012320382');
+insert into Adopter(adopter_id, first_name, last_name, email, address, zipcode, city, state, phone) values (4, 'John', 'Smith', 'js@hotmail.com', '1237 imaginary street', '68123', 'Omaha', 'NE', '4023127492');
+insert into Adopter(adopter_id, first_name, last_name, email, address, zipcode, city, state, phone) values (5, 'Shawn', 'Jobs', 'sj@hotmail.com', '1238 imaginary street', '68123', 'Omaha', 'NE', '4023933398');
+insert into Donator(donor_id, first_name, last_name, email, phone) values (1, 'Josh', 'Irvin', 'jdirvin@gmail.com', '4025051301');
+insert into Donator(donor_id, first_name, last_name, email, phone) values (2, 'John', 'Smith', 'js@hotmail.com', '4023127492');
+insert into Donator(donor_id, first_name, last_name, email, phone) values (3, 'Sherry', 'Hawking', 's_hawking@gmail.com', '4025111301');
+insert into Donator(donor_id, first_name, last_name, email, phone) values (4, 'Tom', 'Beaaty', 'bball23@ymail.com', '4022531301');
+insert into Donator(donor_id, first_name, last_name, email, phone) values (5, 'Ryan', 'Keebler', 'steak@gmail.com', '4025063601');
+insert into Employee(emp_id, first_name, last_name, email, address, zipcode, city, state, phone, salary) values (1, 'Robert', 'Smith', 'rs@gmail.com', '2222 imaginary lane', '68132', 'Omaha', 'NE', '4023921832', 27000.00);
+insert into Employee(emp_id, first_name, last_name, email, address, zipcode, city, state, phone, salary) values (2, 'Sam', 'Smalls', 'ss@gmail.com', '1112 imaginary lane', '68132', 'Omaha', 'NE', '4023632372', 27000.00);
+insert into Employee(emp_id, first_name, last_name, email, address, zipcode, city, state, phone, salary) values (3, 'Maggie', 'Brown', 'mb@gmail.com', '2622 imaginary lane', '68132', 'Omaha', 'NE', '4023728232', 27000.00);
+insert into Employee(emp_id, first_name, last_name, email, address, zipcode, city, state, phone, salary) values (4, 'Jack', 'Alston', 'ja@gmail.com', '1523 imaginary lane', '68132', 'Omaha', 'NE', '402253262', 27010.00);
+insert into Employee(emp_id, first_name, last_name, email, address, zipcode, city, state, phone, salary) values (5, 'Ethan', 'Bonham', 'ebcheifs@gmail.com', '2251 imaginary lane', '68132', 'Omaha', 'NE', '4023151532', 29000.00);
+insert into Prospective_adopter(p_adopter_id, first_name, last_name, email, pref_gender, pref_breed, pref_type, phone) values (1, 'James', 'Blankenship', 'jb@ymail.com', 'male', 'pug', 'dog', '4023028493');
+insert into Prospective_adopter(p_adopter_id, first_name, last_name, email, pref_gender, pref_breed, pref_type, phone) values (2, 'LeBron', 'James', 'lj@gmail.com', 'female', 'pug', 'dog', '4023724833');
+insert into Prospective_adopter(p_adopter_id, first_name, last_name, email, pref_gender, pref_breed, pref_type, phone) values (3, 'Bob', 'Roberts', 'brobs@gmail.com', 'male', 'russian blue', 'cat', '402325293');
+insert into Prospective_adopter(p_adopter_id, first_name, last_name, email, pref_gender, pref_breed, pref_type, phone) values (4, 'Jenny', 'Miller', 'jmill@gmail.com', 'female', 'poodle', 'dog', '4027234493');
+insert into Prospective_adopter(p_adopter_id, first_name, last_name, email, pref_gender, pref_breed, pref_type, phone) values (5, 'Patrick', 'Rinn', 'prin@gmail.com', 'male', 'pug', 'dog', '402383543');
+insert into Adoption(adopter_id, animal_id, adoption_date) values (1, 1, '2017/2/28');
+insert into Adoption(adopter_id, animal_id, adoption_date) values (1, 4, '2017/2/28');
+insert into Adoption(adopter_id, animal_id, adoption_date) values (2, 6, '2017/2/28');
+insert into Adoption(adopter_id, animal_id, adoption_date) values (3, 9, '2017/2/28');
+insert into Adoption(adopter_id, animal_id, adoption_date) values (4, 10, '2017/2/28');
+insert into Adoption(adopter_id, animal_id, adoption_date) values (5, 14, '2017/2/28');
+insert into Adoption(adopter_id, animal_id, adoption_date) values (5, 13, '2017/2/28');
+insert into Adoption(adopter_id, animal_id, adoption_date) values (1, 5, '2017/2/28');
+insert into Donation(donor_id, animal_id) values (1, 1);
+insert into Donation(donor_id, animal_id) values (1, 2);
+insert into Donation(donor_id, animal_id) values (1, 3);
+insert into Donation(donor_id, animal_id) values (2, 4);
+insert into Donation(donor_id, animal_id) values (2, 5);
+insert into Donation(donor_id, animal_id) values (2, 6);
+insert into Donation(donor_id, animal_id) values (3, 7);
+insert into Donation(donor_id, animal_id) values (3, 8);
+insert into Donation(donor_id, animal_id) values (3, 9);
+insert into Donation(donor_id, animal_id) values (4, 10);
+insert into Donation(donor_id, animal_id) values (4, 11);
+insert into Donation(donor_id, animal_id) values (4, 12);
+insert into Donation(donor_id, animal_id) values (5, 13);
+insert into Donation(donor_id, animal_id) values (5, 14);
+insert into Donation(donor_id, animal_id) values (4, 15);
+insert into Donation(donor_id, animal_id) values (5, 16);
+insert into Donation(donor_id, animal_id) values (5, 17);
+insert into Cares(animal_id, emp_id) values (2, 1); 
+insert into Cares(animal_id, emp_id) values (3, 2); 
+insert into Cares(animal_id, emp_id) values (12, 3);
+insert into Cares(animal_id, emp_id) values (7, 4);
+insert into Cares(animal_id, emp_id) values (8, 5);
+insert into Cares(animal_id, emp_id) values (11, 5);
+insert into Cares(animal_id, emp_id) values (15, 4);
+insert into Cares(animal_id, emp_id) values (16, 5);
+insert into Cares(animal_id, emp_id) values (17, 5);
+insert into Related(animal_id, sibling_id) values (2,3);
+insert into Related(animal_id, sibling_id) values (11,12);
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (1, 'no', 'yes', 'yes', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (2, 'no', 'yes', 'yes', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (3, 'no', 'yes', 'yes', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (4, 'no', 'mo', 'no', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (5, 'no', 'yes', 'no', 'yes');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (6, 'yes', 'yes', 'no', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (7, 'no', 'no', 'no', 'yes');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (8, 'yes', 'yes', 'yes', 'yes');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (9, 'no', 'yes', 'no', 'es');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (10, 'yes', 'yes', 'no', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (11, 'no', 'yes', 'yes', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (12, 'yes', 'yes', 'yes', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (13, 'no', 'yes', 'no', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (14, 'yes', 'mo', 'yes', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (15, 'no', 'yes', 'no', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (16, 'no', 'yes', 'no', 'no');
+insert into Medical_history(animal_id, spay_neuter, vaccination, fleas, heartworms) values (17, 'no', 'yes', 'no', 'no');
+
+
+------------------------------------
+
+Queries:
+
+1. Insert selected from one table into another
+
+insert into Desires(p_adopter_id, pref_gender, pref_breed, pref_type, animal_id) select p_adopter_id, pref_gender, pref_breed, pref_type, animal_id from Prospective_adopter, Animal where pref_breed = breed and pref_type = animal_type and pref_gender = gender;
+
+This query populates the desires table with animal_id's that have the preferred properties of a prospective adopter.
+
+2. Update
+
+update Medical_history set fleas = 'no' where animal_id = 16;
+
+The update query will be useful for updating the medical records of animals, this query reflects animal_id 16 having it's flea problem solved.
+
+3. Natural Join
+
+SELECT animal_name, first_name, last_name FROM cares natural join employee natural join animal;
+
+This query results in a table of the animal names paired with the employee that takes care of them.
+
+4. Rename
+
+SELECT distinct A.first_name, A.last_name from employee as A, employee as B where A.salary > B.salary;
+
+This query uses renaming when comparies salaries over the employee relation, the result will be a table of highest paid employees.
+
+5. String Operations
+
+SELECT animal_name, animal_id FROM animal natural join medical_history where fleas like '%yes%';
+
+This query produces a table of animal names and ids for every animal that has fleas.
+
+6. Order by
+
+SELECT * FROM employee order by salary desc, last_name desc;
+
+This query produces a table of employees in descending order of salary, and if they share the same salary they are ordered descending by last name
+
+7. Where
+
+SELECT * FROM animal where age between 2 and 5;
+
+This query produces a table of animals between the ages of 2 and 5.
+
+8. Union
+
+(select * from animal where animal_type = "cat" and age > 1) union (select * from animal where animal_type = "dog" and age > 2);
+
+This query produces a table of cats with an age higher of one and dogs with an age higher of 2.
+
+9. Intersect
+
+select distinct first_name, last_name from animal natural join donation natural join donator where animal_type = 'cat' and donor_id in (select donor_id from animal natural join donation natural join donator where animal_type = 'dog') 
+
+This query should produce a table of donators that have donated both a cat and a dog to the shelter.
+
+10. Except
+
+select distinct first_name, last_name from animal natural join donation natural join donator where animal_type = 'dog' and donor_id not in (select donor_id from animal natural join donation natural join donator where animal_type = 'cat') 
+
+This query should producea list of donators that have donated a dog and not a cat.
+
+11. Average
+
+select avg(age) from adoption natural join animal where animal_type = 'dog';
+
+This query produces the average age of all dogs that have been adopted from the shelter.
+
+12. Min	
+
+select min(age) from animal join medical_history where animal_type = 'dog' and fleas = 'yes' 
+
+This query produces the minimum age of the dogs with fleas.
+
+13. group by
+
+select * from animal natural join cat group by animal_id, hair_length;
+
+This query selects cats and groups them by the length of their hair.
+
+14. having 
+
+select * from animal natural join dog group by animal_id, gender having avg(age) > 1;
+
+This query selects dogs groups them by gender and restricts the average age of that group to be above 1
+
+15.  Set membership
+
+select animal_id, animal_name from animal where animal_type = "cat" and animal_id in (select animal_id from adoption where adoption_date like '%2017%');
+
+This query selects cats that were adopted in the year 2017.
+
+16. Set comparison 
+
+select animal_id, animal_name from animal where animal_type = "dog" and age > all (select age from animal where animal_type = "cat");
+
+This query compares sets of dogs and cats and selects dogs having a higher age than every cat.
+
+17. Testing for empty relation
+
+select distinct first_name, phone from adopter natural join adoption as A where exists (select * from medical_history as B where fleas = 'yes' and A.animal_id = B.animal_id);
+
+This query finds names and phone numbers of adopters if the animal they adopted has fleas.
+
+18. Absence of duplicate tuples
+
+select distinct A.adopter_id from adopter natural join adoption as A where 1 <= (select count(B.adopter_id) from adopter natural join adoption as B where A.adopter_id = B.adopter_id);
+
+This tuple checks if an adopter has made exactly one adoption
+
+19. nested query in from clause
+
+select A.animal_id, A.age, A.animal_name from (select * from animal where animal_type = 'dog' and intake_date like '%2017%') as A 
+
+This query produces a table containing animal_id, age and name for dogs that were donated in the year 2017.
+
+20. deletion
+
+delete from prospective_adopter where first_name = 'James' and last_name = 'Blankenship';
+
+This query deletes a specific prospective adopter which could be used in the case where they are no longer interested in adoption.
+
+21. order by
+
+select * from animal order by age;
+
+This query results in the animal entity ordered by age.
+
+22.  select * from animal natural right outer join dog
+
+produces a table that contains full information about the dogs in the shelter
+
+23.  select * from animal natural right outer join related 
+
+produces a table that contains full information about animals that have a sibling 
+
+24. insert into animal(animal_id, animal_name, gender, breed, intake_date, age, animal_type) values (20, 'Jake', 'male', 'russian blue', '2017/12/12', 22, 'man');
+
+Checking integrity constraint of animal table that checks if animal_type is 'dog' or 'cat'; in this insert we enter the animal_type as "man", it appears WAMP does not enforce this constraint.
+
+
+-------------------------------
+
+Small changes were made to the SQL specification by adding integrity constraints with check clauses to some of the tables and the removal of the medical record table as it was redundant with medical history.
+
+Original specification:
+
+create table Animal(
+    animal_id     varchar(7) not null,
+    animal_name              varchar(20) not null,
+    gender              varchar(6) not null,
+    breed        varchar(20),
+    intake_date   date,
+    age        int not null,
+    animal_type        varchar(3) not null,
+    primary key (animal_id));
+
+create table Adopter(
+    adopter_id    varchar(7) not null,
+    first_name    varchar(20) not null,
+    last_name    varchar(20) not null,
+    email        varchar(30),
+    address    varchar(30) not null,
+    zipcode    varchar(12) not null,
+    city        varchar(20) not null,
+    state        varchar(20) not null,
+    phone        varchar(10) not null,
+    primary key (adopter_id));
+
+create table Donator(
+    donor_id    varchar(7) not null,
+    first_name    varchar(20) not null,
+    last_name    varchar(20) not null,
+    email        varchar(30),
+    phone        varchar(10) not null,
+    primary key (donor_id));
+
+create table Employee(
+    emp_id    varchar(7) not null,
+    first_name    varchar(20) not null,
+    last_name    varchar(20) not null,
+    email        varchar(30),
+    address    varchar(30) not null,
+    zipcode    varchar(12) not null,
+    city        varchar(20) not null,
+state        varchar(20) not null,
+    phone        varchar(10) not null,
+    salary        numeric(8,2),
+    check(salary > 0),
+    primary key (emp_id));
+
+create table Prospective_adopter(
+    p_adopter_id    varchar(7) not null,
+    first_name    varchar(20) not null,
+    last_name    varchar(20) not null,
+    email        varchar(30),
+    pref_gender   varchar(6) not null,
+    pref_breed    varchar(20),
+    pref_type    varchar(3) not null,
+check(pref_type in (‘cat’, ‘dog’)),
+    phone        varchar(10) not null,
+    primary key (p_adopter_id, pref_gender, pref_breed, pref_type));
+
+create table Cat(
+    animal_id    varchar(7) not null,
+    hair_length    varchar(10) not null,
+    check(hair_length in (‘none’, ‘short’, ‘long’),
+    primary key (animal_id),
+    foreign key (animal_id) references Animal);
+
+create table Dog(
+    animal_id    varchar(7) not null,
+    size        varchar(10) not null,
+    check(size in (‘small’, ‘medium’, ‘large’)),
+    primary key (animal_id),
+    foreign key (animal_id) references Animal);
+
+create table Adoption(
+    adopter_id    varchar(7) not null,
+    animal_id    varchar(7) not null,
+    adoption_date        date,
+    primary key (animal_id, adopter_id),
+    foreign key (animal_id) references Animal,
+    foreign key (adopter_id) references Adopter);
+
+create table Donation(
+    donor_id    varchar(7) not null,
+    animal_id    varchar(7) not null,
+    primary key (animal_id, donor_id),
+    foreign key (animal_id) references Animal,
+    foreign key (donor_id) references Donator);
+
+create table Desires(
+    p_adopter_id    varchar(7) not null,
+    pref_gender   varchar(6) not null,
+    pref_breed    varchar(20),
+    pref_type    varchar(3) not null,
+    animal_id    varchar(7) not null,
+    primary key (p_adopter_id, pref_gender, pref_breed, pref_type,animal_id),
+    foreign key (p_adopter_id, pref_gender, pref_breed, pref_type) references 
+    Prospective_adopter,
+    foreign key (animal_id) references Animal);
+
+create table Cares(
+    animal_id    varchar(7) not null,
+    emp_id    varchar(7) not null,
+    primary key (animal_id, emp_id) ,
+    foreign key (animal_id) references Animal,
+    foreign key (emp_id) references Employee);
+
+create table Related(
+    animal_id     varchar(7) not null,
+    sibling_id    varchar(7) not null,
+    primary key (animal_id, sibling_id),
+    foreign key (animal_id) references Cat,
+    foreign key (sibling_id) references Cat(animal_id));
+
+create table Medical_Record(
+    spay_neuter    varchar(5) not null,
+    vaccination    varchar(3) not null,
+    fleas        varchar(3) not null,
+    heartworms    varchar(3) not null);
+
+create table Med_Record(
+    animal_id    varchar(7) not null,
+    spay_neuter    varchar(5) not null,
+    vaccination    varchar(3) not null,
+    fleas        varchar(3) not null,
+    heartworms    varchar(3) not null);
+
+create table Med_History(
+    animal_id    varchar(7) not null,
+    spay_neuter    varchar(5) not null,
+    vaccination    varchar(3) not null,
+    fleas        varchar(3) not null,
+    heartworms    varchar(3) not null,
+    primary key(animal_id),
+    foreign key(animal_id) references animal,
+    foreign key(spay_neuter, vaccination, fleas, heartworms) references medical_record);
+
+
+
+
+
+
+
+
